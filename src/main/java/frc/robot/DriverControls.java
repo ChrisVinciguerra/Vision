@@ -25,7 +25,7 @@ public class DriverControls extends PS4Controller {
      */
     private void controls() {
         if (getXButton()) {
-            Limelight.run(false);
+            Limelight.run();
         } else {
             speedStraight = getLeftYAxis();
             speedStraight = Math.abs(speedStraight) > .1 ? speedStraight : 0;

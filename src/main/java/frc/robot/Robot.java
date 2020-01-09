@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
-
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -58,7 +57,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    Limelight.run(false);
+    Limelight.run();
   }
 
   /**
@@ -66,7 +65,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    DriverControls.driverControls();
+   DriverControls.driverControls();
   }
 
   /**
@@ -74,6 +73,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    DriverControls.driverControls();
+   Limelight.run();
   }
 }

@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight {
     private static PIDController turnController, distanceController;
+    private static NetworkTable limelightTable;
     static {
+        limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
         turnController = new PIDController(.001, 0, 0);
         turnController.setTolerance(.1);
         turnController.setSetpoint(0);
@@ -18,15 +20,12 @@ public class Limelight {
         SmartDashboard.putData(distanceController);
     }
 
-    public static void run(boolean dataOnly) {
-        NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
+    public static void run() {
         double tv = limelightTable.getEntry("tv").getDouble(0);
         double tx = limelightTable.getEntry("tx").getDouble(0);
         double ta = limelightTable.getEntry("ta").getDouble(0);
-        SmartDashboard.putNumber("TV", tv);
-        SmartDashboard.putNumber("TX", tx);
-        SmartDashboard.putNumber("TA", ta);
-        if (tv == 1.0 && !dataOnly) {
+        System.out.println("TV: " + tv);
+        if (tv == 1.0) {
             double turnSpeed = turnController.calculate(tx);
             double straightSpeed = -distanceController.calculate(ta);
             SmartDashboard.putNumber("Straight Speed", straightSpeed);
