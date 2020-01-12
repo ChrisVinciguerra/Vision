@@ -2,26 +2,29 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Drivetrain {
-    private static TalonSRX frontLeft, topLeft, backLeft, frontRight, topRight, backRight;
+    private static TalonSRX topLeft, topRight;
+    private static VictorSPX backLeft, backRight;
     static {
-        topLeft = new TalonSRX(10);
-        topRight = new TalonSRX(4);
-        //TODO: Verify other motor orientations and enable
-        // frontLeft = new TalonSRX(9);
-        // frontLeft.set(ControlMode.Follower, 10);
-        // backLeft = new TalonSRX(8);
-        // backLeft.set(ControlMode.Follower, 10);
-        // frontRight = new TalonSRX(2);
-        // frontRight.set(ControlMode.Follower, 4);
-        // backRight = new TalonSRX(3);
-        // backRight.set(ControlMode.Follower, 4);
+        topLeft = new TalonSRX(2);
+        topRight = new TalonSRX(1);
+        backLeft = new VictorSPX(4);
+        backLeft.follow(topLeft);
+        backRight = new VictorSPX(3);
+        backRight.follow(topRight);
     }
 
     public static void arcadeDrive(double speedStraight, double speedLeft, double speedRight) {
-        topLeft.set(ControlMode.PercentOutput, speedStraight + speedLeft - speedRight);
-        topRight.set(ControlMode.PercentOutput, speedStraight - speedLeft + speedRight);
+        double totalLeft = speedStraight + speedLeft - speedRight;
+        double totalRight = speedStraight - speedLeft + speedRight;
+        if (totalLeft > 1 || totalRight > 1) {
+            double largest = Math.max(totalLeft, totalRight);
+            totalLeft /= largest;
+            totalRight /= largest;
+        }
+        topLeft.set(ControlMode.PercentOutput, totalLeft);
+        topRight.set(ControlMode.PercentOutput, totalRight);
     }
-
 }

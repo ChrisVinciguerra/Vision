@@ -10,12 +10,10 @@ public class Limelight {
     private static NetworkTable limelightTable;
     static {
         limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
-        turnController = new PIDController(.001, 0, 0);
-        turnController.setTolerance(.1);
+        turnController = new PIDController(0.016, 0, .06);// .21, .7
         turnController.setSetpoint(0);
-        distanceController = new PIDController(.001, 0, 0);
-        distanceController.setTolerance(1);
-        distanceController.setSetpoint(7);
+        distanceController = new PIDController(.008, 0, 0);// 1.1, .9
+        distanceController.setSetpoint(240);
         SmartDashboard.putData(turnController);
         SmartDashboard.putData(distanceController);
     }
@@ -23,18 +21,26 @@ public class Limelight {
     public static void run() {
         double tv = limelightTable.getEntry("tv").getDouble(0);
         double tx = limelightTable.getEntry("tx").getDouble(0);
-        double ta = limelightTable.getEntry("ta").getDouble(0);
+        tx = Math.round(tx * 100.0) / 100.0;
+        double tlong = limelightTable.getEntry("tlong").getDouble(0);
+        tlong = Math.round(tlong * 100.0) / 100.0;
         System.out.println("TV: " + tv);
+        double turnSpeed = 0;
+        double straightSpeed = 0;
         if (tv == 1.0) {
-            double turnSpeed = turnController.calculate(tx);
-            double straightSpeed = -distanceController.calculate(ta);
-            SmartDashboard.putNumber("Straight Speed", straightSpeed);
-            SmartDashboard.putNumber("Turn Speed", turnSpeed);
+            turnSpeed = turnController.calculate(tx);
+            straightSpeed = -distanceController.calculate(tlong);
             Drivetrain.arcadeDrive(straightSpeed, turnSpeed, 0);
-        } else {
-            SmartDashboard.putNumber("Straight Speed", 0);
-            SmartDashboard.putNumber("Turn Speed", 0);
-            Drivetrain.arcadeDrive(0, 0, 0);
         }
+        SmartDashboard.putNumber("Current error: ", tx);
+        SmartDashboard.putNumber("Current area: ", tlong);
+
+        SmartDashboard.putNumber("Straight Speed", straightSpeed);
+        SmartDashboard.putNumber("Turn Speed", turnSpeed);
+        System.out.println("Current error: " + tx);
+        System.out.println("Current area: " + tlong);
+        System.out.println("Straight speed: " + straightSpeed);
+        System.out.println("Turn Speed: " + turnSpeed);
+        Drivetrain.arcadeDrive(straightSpeed, turnSpeed, 0);
     }
 }
