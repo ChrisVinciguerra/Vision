@@ -13,7 +13,7 @@ public class Limelight {
         turnController = new PIDController(0.016, 0, .06);// .21, .7
         turnController.setSetpoint(0);
         distanceController = new PIDController(.008, 0, 0);// 1.1, .9
-        distanceController.setSetpoint(240);
+        distanceController.setSetpoint(0);
         SmartDashboard.putData(turnController);
         SmartDashboard.putData(distanceController);
     }
@@ -21,10 +21,8 @@ public class Limelight {
     public static void run() {
         double tv = limelightTable.getEntry("tv").getDouble(0);
         double tx = limelightTable.getEntry("tx").getDouble(0);
-        tx = Math.round(tx * 100.0) / 100.0;
         double tlong = limelightTable.getEntry("tlong").getDouble(0);
-        tlong = Math.round(tlong * 100.0) / 100.0;
-        System.out.println("TV: " + tv);
+        
         double turnSpeed = 0;
         double straightSpeed = 0;
         if (tv == 1.0) {
@@ -37,10 +35,6 @@ public class Limelight {
 
         SmartDashboard.putNumber("Straight Speed", straightSpeed);
         SmartDashboard.putNumber("Turn Speed", turnSpeed);
-        System.out.println("Current error: " + tx);
-        System.out.println("Current area: " + tlong);
-        System.out.println("Straight speed: " + straightSpeed);
-        System.out.println("Turn Speed: " + turnSpeed);
         Drivetrain.arcadeDrive(straightSpeed, turnSpeed, 0);
     }
 }
